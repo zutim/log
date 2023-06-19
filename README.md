@@ -8,7 +8,7 @@ example:
 
 import (
 	"go.uber.org/zap"
-	logutil "test/newZap/goUtil"
+	logutil "github.com/zutim/log"
 )
 
 func main() {
