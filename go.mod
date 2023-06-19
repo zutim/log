@@ -1,4 +1,4 @@
-module myUnitl/log
+module github.com/zutim/log
 
 go 1.18
 
