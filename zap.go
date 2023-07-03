@@ -16,7 +16,7 @@ type LoggerOptions struct {
 type Option func(options *LoggerOptions)
 
 // InitLogger 初始化日志记录器
-func InitLogger(opts ...Option) *zap.Logger {
+func initLogger(opts ...Option) *zap.Logger {
 
 	defaultOptions := LoggerOptions{Path: "log/run.log", MaxSize: 100, MaxBackups: 10, MaxAge: 30}
 
