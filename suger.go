@@ -1,7 +1,6 @@
 package log
 
 import (
-	"fmt"
 	"go.uber.org/zap"
 	"sync"
 	"time"
@@ -49,7 +48,7 @@ func (l *logMap) deleteMap(path string) {
 func (l *logMap) WithOptionPath(op LoggerOptions) *zap.SugaredLogger {
 	// 加上今天的日期
 	path := op.Path + "-" + time.Now().Format("2006-01-02") + ".log"
-	fmt.Println(path)
+
 	if suger := l.getMap(path); suger != nil {
 		return suger
 	}

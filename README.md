@@ -7,64 +7,44 @@ example:
 ```package main
 
 import (
+	"github.com/zutim/log"
 	"go.uber.org/zap"
-	logutil "github.com/zutim/log"
 )
 
 func main() {
 
 	NewApp()
+	UserLog().Info("test user")
+	OrderLog().Info("test order")
 
-	App.Logs("").Info("你好a")
-	App.Logs("order").Error("cao gege")
-	App.Logs("user").Debug("I was a wang lei")
 }
 
 type Apps struct {
-	Log map[string]*zap.SugaredLogger
-}
-
-func (a *Apps) Logs(key string) *zap.SugaredLogger {
-	if _, ok := a.Log[key]; ok {
-		return a.Log[key]
-	}
-	return a.Log["log"]
+	Log *zap.SugaredLogger
 }
 
 var App *Apps
 
 func NewApp() {
+	logsMap := log.NewLogMap().WithOptionPath(log.LoggerOptions{})
 	App = &Apps{
-		Log: map[string]*zap.SugaredLogger{
-			"log":   NewDefaultLogger(),
-			"order": NewOrderLogger(),
-			"user":  NewUserLogger(),
-		},
+		Log: logsMap,
 	}
 }
 
-func NewDefaultLogger() *zap.SugaredLogger {
-	logger := logutil.InitLogger(func(options *logutil.LoggerOptions) {
-		options.Path = "log/common.log"
-	})
-	defer logger.Sync()
-	return logger.Sugar()
+func UserLog() *zap.SugaredLogger {
+	op := log.LoggerOptions{
+		Path: "user",
+	}
+	return log.NewLogMap().WithOptionPath(op)
 }
 
-func NewOrderLogger() *zap.SugaredLogger {
-	logger := logutil.InitLogger(func(options *logutil.LoggerOptions) {
-		options.Path = "log/order.log"
-	})
-	defer logger.Sync()
-	return logger.Sugar()
+func OrderLog() *zap.SugaredLogger {
+	op := log.LoggerOptions{
+		Path: "order",
+	}
+	return log.NewLogMap().WithOptionPath(op)
 }
 
-func NewUserLogger() *zap.SugaredLogger {
-	logger := logutil.InitLogger(func(options *logutil.LoggerOptions) {
-		options.Path = "log/user.log"
-	})
-	defer logger.Sync()
-	return logger.Sugar()
-}
 ```
 
