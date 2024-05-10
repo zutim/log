@@ -11,6 +11,7 @@ type LoggerOptions struct {
 	MaxSize    int
 	MaxBackups int
 	MaxAge     int
+	Compress   bool
 }
 
 type Option func(options *LoggerOptions)
@@ -18,7 +19,7 @@ type Option func(options *LoggerOptions)
 // InitLogger 初始化日志记录器
 func initLogger(opts ...Option) *zap.Logger {
 
-	defaultOptions := LoggerOptions{Path: "log/run.log", MaxSize: 100, MaxBackups: 10, MaxAge: 30}
+	defaultOptions := LoggerOptions{Path: "log/run.log", MaxSize: 100, MaxBackups: 10, MaxAge: 30, Compress: false}
 
 	for _, setter := range opts {
 		setter(&defaultOptions)
@@ -39,7 +40,7 @@ func initLogger(opts ...Option) *zap.Logger {
 		MaxSize:    defaultOptions.MaxSize,    // 单位：MB，达到该大小时触发分割
 		MaxBackups: defaultOptions.MaxBackups, // 最多保留的旧日志文件数量
 		MaxAge:     defaultOptions.MaxAge,     // 单位：天，旧日志文件保留的时间
-		Compress:   true,                      // 分割后的日志文件是否压缩
+		Compress:   defaultOptions.Compress,   // 分割后的日志文件是否压缩
 	}
 
 	// 配置日志核心
@@ -54,4 +55,12 @@ func initLogger(opts ...Option) *zap.Logger {
 	loggerObj := zap.New(core, zap.AddCaller())
 
 	return loggerObj
+}
+
+type Writer struct {
+	Log *zap.SugaredLogger
+}
+
+func (w Writer) Printf(format string, args ...interface{}) {
+	w.Log.Infof(format, args...)
 }
